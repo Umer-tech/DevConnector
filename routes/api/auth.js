@@ -7,7 +7,7 @@ const auth = require("../../middleware/auth");
 const User = require("../../models/Users");
 //@route Get api/auth
 //@desc Test route
-//@access Public
+//@access Private
 
 router.get("/", auth, async (req, res) => {
   try {

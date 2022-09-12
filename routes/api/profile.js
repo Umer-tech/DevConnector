@@ -1,3 +1,4 @@
+const request = require("request");
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
@@ -195,6 +196,10 @@ router.delete("/experience/:exp_id", auth, async (req, res) => {
     const removeIndex = profile.experience
       .map((item) => item.id)
       .indexOf(req.params.exp_id);
+    if (removeIndex == -1)
+      return res.status(400).json({
+        msg: "Not Found",
+      });
 
     profile.experience.splice(removeIndex, 1);
     await profile.save();
@@ -251,18 +256,50 @@ router.put(
 router.delete("/education/:edu_id", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id });
-
+    console.error(profile);
     //Get remove index
     const removeIndex = profile.education
       .map((item) => item.id)
-      .indexOf(req.params.exp_id);
-
+      .indexOf(req.params.edu_id);
+    if (removeIndex == -1)
+      return res.status(400).json({
+        msg: "Not Found",
+      });
     profile.education.splice(removeIndex, 1);
     await profile.save();
     res.json(profile);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
+  }
+});
+//@route Get api/github/:username
+//@desc Get user repos from GitHub
+//@access Public
+router.get("/github/:username", async (req, res) => {
+  try {
+    const options = {
+      uri: `https://api.github.com/users/${req.params.username}/repos
+      ?per_page=5&sort=created:asc&client_id=${process.env.githubClientId}
+      &client_secret=${process.env.githubSecret}`,
+      method: "GET",
+      headers: { "user-agent": "node.js" },
+    };
+    request(
+      `https://api.github.com/users/${req.params.username}/repos
+    ?per_page=5&sort=created:asc&client_id=${process.env.githubClientId}
+    &client_secret=${process.env.githubSecret}`,
+      (error, response, body) => {
+        if (error) console.error(error);
+        if (response.statusCode !== 200) {
+          res.status(404).json({ msg: "No Github profile found" });
+        }
+        res.json(JSON.parse(body));
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.send("Server Error");
   }
 });
 module.exports = router;

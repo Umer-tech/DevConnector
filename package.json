@@ -5,11 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon server"
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run client\" \"npm run server\" "
   },
   "author": "Umer Abdul Majeed",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.7",
     "dotenv": "^16.0.2",
@@ -17,11 +20,18 @@
     "express-validator": "^6.14.2",
     "gravatar": "^1.8.2",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
     "mongoose": "^6.5.4",
+    "react-moment": "^1.1.2",
+    "react-redux": "^8.0.2",
+    "redux": "^4.2.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "concurrently": "^7.4.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "react-router-dom": "^6.3.0"
   }
 }
